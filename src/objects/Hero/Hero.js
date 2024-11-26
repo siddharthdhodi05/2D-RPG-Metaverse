@@ -48,9 +48,25 @@ export class Hero extends GameObject {
 
     this.facingDirection = DOWN;
     this.destinatioPosition = this.position.duplicate();
+    this.itemPickupTime = 0;
+    this.itemPickupShell = null;
+
+    events.on("HERO_PICKS_UP_ITEM",this,data=>{
+      this.onPickUpItem(data)
+    })
+
   }
 
+
   step(delta,root){
+
+    //lock movement if celebrating an item pickup
+    if(this.itemPickupTime > 0){
+      this.workOnItemPickup(delta);
+      return;
+    }
+
+
     const distance = moveTowards(this, this.destinatioPosition, 1);
   const hasArrived = distance <=1;
   //attempt to move again if the hero is at the position
@@ -114,6 +130,32 @@ export class Hero extends GameObject {
     if (isSpaceFree(walls, nextX, nextY)) {
       this.destinatioPosition.x = nextX;
       this.destinatioPosition.y = nextY;
+    }
+  }
+
+  onPickUpItem({image,position}){
+    //make sure we land on the item
+    this.destinatioPosition =  position.duplicate();
+
+    //start the pickup animation
+    this.itemPickupTime = 500;//ms
+
+    this.itemPickupShell =  new GameObject({});
+    this.itemPickupShell.addChild(new Sprite({
+      resource:image,
+      position:new Vector2(0,-18)
+    }))
+    this.addChild(this.itemPickupShell);
+  }
+
+
+
+  workOnItemPickup(delta){
+    this.itemPickupTime -= delta;
+    this.body.animations.play("pickUpDown")
+
+    if(this.itemPickupTime<=0){
+      this.itemPickupShell.destroy();
     }
   }
 }
