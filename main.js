@@ -1,4 +1,6 @@
 import { Animations } from "./src/Animations";
+import { Camera } from "./src/Camera";
+import { events } from "./src/Events";
 import { FrameIndexPattern } from "./src/FrameIndexPattern";
 import { GameLoop } from "./src/GameLoop";
 import { GameObject } from "./src/GameObject";
@@ -28,7 +30,7 @@ const skySprite = new Sprite({
   resource: resourses.images.sky,
   frameSize: new Vector2(320, 180),
 });
-mainScene.addChild(skySprite)
+//mainScene.addChild(skySprite)
 
 const groundSprite = new Sprite({
   resource: resourses.images.ground,
@@ -40,15 +42,37 @@ mainScene.addChild(groundSprite)
 const hero = new Hero(gridCells(6), gridCells(5))
 mainScene.addChild(hero)
 
+
+const camera = new Camera();
+mainScene.addChild(camera);
+
+
 // add an Input class to the main Scene
 mainScene.input = new Input();
+
 
 //establish update and draw loops
 const update = (delta) => {
   mainScene.stepEntry(delta,mainScene)
 };
 const draw = () => {
+  //clear anything stale
+  ctx.clearRect(0,0, canvas.width, canvas.height);
+
+  skySprite.drawImage(ctx,0,0)
+
+  //save the current state(for camera offset)
+  ctx.save()
+
+  //offset by camera position
+  ctx.translate(camera.position.x,camera.position.y)
+
+  //restore the original state
   mainScene.draw(ctx,0,0);
+
+  ctx.restore();
+
+  
 };
 
 
