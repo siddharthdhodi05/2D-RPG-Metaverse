@@ -10,6 +10,7 @@ import { DOWN, Input, LEFT, RIGHT, UP } from "./src/Input";
 import { walls } from "./src/levels/level1";
 import { Hero } from "./src/objects/Hero/hero";
 import { PICK_UP_DOWN, STAND_DOWN, STAND_LEFT, STAND_RIGHT, STAND_UP, WALK_DOWN, WALK_LEFT, WALK_RIGHT, WALK_UP } from "./src/objects/Hero/heroAnimations";
+import { Inventory } from "./src/objects/Inventory/Inventory";
 import { Rod } from "./src/objects/Rod/Rod";
 import { resourses } from "./src/Resource";
 import { Sprite } from "./src/Sprite";
@@ -51,6 +52,9 @@ mainScene.addChild(camera);
 const rod = new Rod(gridCells(7), gridCells(6))
 mainScene.addChild(rod)
 
+const inventory = new Inventory()
+
+
 // add an Input class to the main Scene
 mainScene.input = new Input();
 
@@ -76,6 +80,7 @@ const draw = () => {
 
   ctx.restore();
 
+  inventory.draw(ctx,0,0)
   
 };
 

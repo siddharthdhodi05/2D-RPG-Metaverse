@@ -7,13 +7,26 @@ export class GameObject{
     this.position = position ?? new Vector2(0,0);
     this.children = [];
     this.parent = null;
+    this.hasReadyBeenCalled = false;
   }
   //first entry point of the loop
   stepEntry(delta, root){
     //call updates on all children first
     this.children.forEach((child)=>child.stepEntry(delta, root))
+
+    //call ready on the first frame
+    if(!this.hasReadyBeenCalled){
+      this.hasReadyBeenCalled=true;
+      this.ready()
+    }
+
     // call implemented step code
     this.step(delta, root)
+
+  }
+
+  // called before the first step
+  ready(){
 
   }
 
@@ -53,7 +66,7 @@ export class GameObject{
   }
 
   removeChild(gameObject){
-    console.log("gameobject",gameObject);
+    //console.log("gameobject",gameObject);
     
     events.unsubscribe(gameObject);
     this.children = this.children.filter(g =>{
